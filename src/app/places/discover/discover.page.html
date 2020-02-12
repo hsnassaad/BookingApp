@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button id="m1"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Discover Places</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-segment (ionChange)="onFilterUpdate($event)">
+    <ion-segment-button value="all" checked>All Places</ion-segment-button>
+    <ion-segment-button value="bookabel">Bookable Places</ion-segment-button>
+  </ion-segment>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-sm="8" offset-sm="2" class="ion-text-center">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{placess[0].title}}</ion-card-title>
+            <ion-card-subtitle
+              >{{placess[0].price | currency}} / Night</ion-card-subtitle>
+          </ion-card-header>
+          <ion-img [src]="placess[0].imageUrl"></ion-img>
+          <ion-card-content>
+            <p>{{placess[0].description}}</p>
+          </ion-card-content>
+          <div class="ion-text-right">
+            <ion-button
+              fill="clear"
+              color="primary"
+              [routerLink]="[
+              '/',
+              'places',
+              'tabs',
+              'discover',
+               placess[0].id]"
+            >
+            More
+            </ion-button>
+          </div>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" size-sm="8" offset-sm="2" class="ion-text-center" >
+        <ion-list *ngFor="let place of listedLoaded">
+          <ion-item
+          [routerLink]="[
+          '/',
+          'places',
+          'tabs',
+          'discover',
+          place.id
+          ]"
+          detail>
+            <ion-thumbnail slot="start">
+              <ion-img [src]="place.imageUrl"></ion-img>
+            </ion-thumbnail>
+            <ion-label>
+              <h2>{{place.title}}</h2>
+              <p>{{place.description}}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
