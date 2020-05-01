@@ -1,157 +1,116 @@
 import { Injectable } from '@angular/core';
 import { Place } from '../Models/place';
-
+import { AuthService } from '../auth/auth.service';
+import { BehaviorSubject, of } from 'rxjs';
+import { take, map, tap, delay, switchMap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { registerLocaleData } from '@angular/common';
+import { AngularFirestore } from '@angular/fire/firestore';
 @Injectable({
   providedIn: 'root'
 })
 export class PlacesService {
   // tslint:disable-next-line: variable-name
-  private _places: Place[] = [
-    {
-      id: 'p1',
-      title: 'Manhattan Mansion',
-      description: 'In heart of New York City',
-      imageUrl:
-        'https://imgs.6sqft.com/wp-content/uploads/2014/06/21042533/Carnegie-Mansion-nyc.jpg',
-      price: 149.99
-    },
-    {
-      id: 'p2',
-      title: 'Aramta',
-      description: 'Hassan Assaad village',
-      imageUrl:
-        'https://www.lebanoninapicture.com/Prv/Images/Pages/Page_161671/%D8%B9%D8%B1%D9%85%D8%AA%D9%89-19-01-2018-snow-lebanon-southlebanon-aara-1-22-2018-11-26-56-am-l.jpg',
-      price: 50
-    },
-    {
-      id: 'p3',
-      title: 'Aramta 3',
-      description: 'Hassan Assaad village',
-      imageUrl:
-        'https://www.lebanoninapicture.com/Prv/Images/Pages/Page_161671/%D8%B9%D8%B1%D9%85%D8%AA%D9%89-19-01-2018-snow-lebanon-southlebanon-aara-1-22-2018-11-26-56-am-l.jpg',
-      price: 50
-    },
-    {
-      id: 'p4',
-      title: 'Aramta 4',
-      description: 'Hassan Assaad village',
-      imageUrl:
-        'https://www.lebanoninapicture.com/Prv/Images/Pages/Page_161671/%D8%B9%D8%B1%D9%85%D8%AA%D9%89-19-01-2018-snow-lebanon-southlebanon-aara-1-22-2018-11-26-56-am-l.jpg',
-      price: 50
-    },
-    {
-      id: 'p5',
-      title: 'Aramta 5',
-      description: 'Hassan Assaad village',
-      imageUrl:
-        'https://www.lebanoninapicture.com/Prv/Images/Pages/Page_161671/%D8%B9%D8%B1%D9%85%D8%AA%D9%89-19-01-2018-snow-lebanon-southlebanon-aara-1-22-2018-11-26-56-am-l.jpg',
-      price: 50
-    },
-    {
-      id: 'p6',
-      title: 'Aramta 6',
-      description: 'Hassan Assaad village',
-      imageUrl:
-        'https://www.lebanoninapicture.com/Prv/Images/Pages/Page_161671/%D8%B9%D8%B1%D9%85%D8%AA%D9%89-19-01-2018-snow-lebanon-southlebanon-aara-1-22-2018-11-26-56-am-l.jpg',
-      price: 50
-    },
-    {
-      id: 'p6',
-      title: 'Aramta 6',
-      description: 'Hassan Assaad village',
-      imageUrl:
-        'https://www.lebanoninapicture.com/Prv/Images/Pages/Page_161671/%D8%B9%D8%B1%D9%85%D8%AA%D9%89-19-01-2018-snow-lebanon-southlebanon-aara-1-22-2018-11-26-56-am-l.jpg',
-      price: 50
-    },
-    {
-      id: 'p6',
-      title: 'Aramta 6',
-      description: 'Hassan Assaad village',
-      imageUrl:
-        'https://www.lebanoninapicture.com/Prv/Images/Pages/Page_161671/%D8%B9%D8%B1%D9%85%D8%AA%D9%89-19-01-2018-snow-lebanon-southlebanon-aara-1-22-2018-11-26-56-am-l.jpg',
-      price: 50
-    },
-    {
-      id: 'p6',
-      title: 'Aramta 6',
-      description: 'Hassan Assaad village',
-      imageUrl:
-        'https://www.lebanoninapicture.com/Prv/Images/Pages/Page_161671/%D8%B9%D8%B1%D9%85%D8%AA%D9%89-19-01-2018-snow-lebanon-southlebanon-aara-1-22-2018-11-26-56-am-l.jpg',
-      price: 50
-    },
-    {
-      id: 'p6',
-      title: 'Aramta 6',
-      description: 'Hassan Assaad village',
-      imageUrl:
-        'https://www.lebanoninapicture.com/Prv/Images/Pages/Page_161671/%D8%B9%D8%B1%D9%85%D8%AA%D9%89-19-01-2018-snow-lebanon-southlebanon-aara-1-22-2018-11-26-56-am-l.jpg',
-      price: 50
-    },
-    {
-      id: 'p6',
-      title: 'Aramta 6',
-      description: 'Hassan Assaad village',
-      imageUrl:
-        'https://www.lebanoninapicture.com/Prv/Images/Pages/Page_161671/%D8%B9%D8%B1%D9%85%D8%AA%D9%89-19-01-2018-snow-lebanon-southlebanon-aara-1-22-2018-11-26-56-am-l.jpg',
-      price: 50
-    },
-    {
-      id: 'p6',
-      title: 'Aramta 6',
-      description: 'Hassan Assaad village',
-      imageUrl:
-        'https://www.lebanoninapicture.com/Prv/Images/Pages/Page_161671/%D8%B9%D8%B1%D9%85%D8%AA%D9%89-19-01-2018-snow-lebanon-southlebanon-aara-1-22-2018-11-26-56-am-l.jpg',
-      price: 50
-    },
-    {
-      id: 'p6',
-      title: 'Aramta 6',
-      description: 'Hassan Assaad village',
-      imageUrl:
-        'https://www.lebanoninapicture.com/Prv/Images/Pages/Page_161671/%D8%B9%D8%B1%D9%85%D8%AA%D9%89-19-01-2018-snow-lebanon-southlebanon-aara-1-22-2018-11-26-56-am-l.jpg',
-      price: 50
-    },
-    {
-      id: 'p6',
-      title: 'Aramta 6',
-      description: 'Hassan Assaad village',
-      imageUrl:
-        'https://www.lebanoninapicture.com/Prv/Images/Pages/Page_161671/%D8%B9%D8%B1%D9%85%D8%AA%D9%89-19-01-2018-snow-lebanon-southlebanon-aara-1-22-2018-11-26-56-am-l.jpg',
-      price: 50
-    },
-    {
-      id: 'p6',
-      title: 'Aramta 6',
-      description: 'Hassan Assaad village',
-      imageUrl:
-        'https://www.lebanoninapicture.com/Prv/Images/Pages/Page_161671/%D8%B9%D8%B1%D9%85%D8%AA%D9%89-19-01-2018-snow-lebanon-southlebanon-aara-1-22-2018-11-26-56-am-l.jpg',
-      price: 50
-    },
-    {
-      id: 'p6',
-      title: 'Aramta 6',
-      description: 'Hassan Assaad village',
-      imageUrl:
-        'https://www.lebanoninapicture.com/Prv/Images/Pages/Page_161671/%D8%B9%D8%B1%D9%85%D8%AA%D9%89-19-01-2018-snow-lebanon-southlebanon-aara-1-22-2018-11-26-56-am-l.jpg',
-      price: 50
-    },
-    {
-      id: 'p7',
-      title: 'The Foggy Palace',
-      description: 'Not your average city trip!',
-      imageUrl:
-        'https://previews.123rf.com/images/andrascsontos/andrascsontos1609/andrascsontos160900120/63752595-foggy-old-stairway-of-a-palace.jpg',
-      price: 20
-    }
-  ];
+  private _places = new BehaviorSubject<Place[]>([]);
 
-  constructor() {}
+  constructor(private authService: AuthService, private http: HttpClient) {}
 
   get places() {
-    return [...this._places];
+    return this._places.asObservable();
+  }
+
+  getAllPlaces() {
+    return this.http
+      .get<{ [key: string]: Place }>(
+        'https://ionic-angular-first-app.firebaseio.com/offerd-places.json'
+      )
+      .pipe(
+        map(response => {
+          const places = [];
+          let place: Place;
+          for (const key in response) {
+            if (response.hasOwnProperty(key)) {
+              place = response[key];
+              place.availableFrom = new Date(response[key].availableFrom);
+              place.availableTo = new Date(response[key].availableTo);
+              place.id = key;
+              places.push(place);
+            }
+          }
+          return places;
+        }),
+        tap(places => {
+          this._places.next(places);
+        })
+      );
   }
 
   getPlace(id: string) {
-    return { ...this._places.find(x => x.id === id) };
+    return this.http
+      .get<Place>(
+        `https://ionic-angular-first-app.firebaseio.com/offerd-places/${id}.json`
+      )
+      .pipe(
+        map(response => {
+          response.availableFrom = new Date(response.availableFrom);
+          response.availableTo = new Date(response.availableTo);
+          return response;
+        })
+      );
+  }
+
+  addPlace(place: Place) {
+    let generatedId: string;
+
+    place.userId = this.authService.userId;
+    place.availableFrom = new Date(place.availableFrom);
+    place.availableTo = new Date(place.availableTo);
+    place.imageUrl =
+      'https://imgs.6sqft.com/wp-content/uploads/2014/06/21042533/Carnegie-Mansion-nyc.jpg';
+
+    return this.http
+      .post<{ name: string }>(
+        'https://ionic-angular-first-app.firebaseio.com/offerd-places.json',
+        place
+      )
+      .pipe(
+        switchMap(response => {
+          generatedId = response.name;
+          return this._places;
+        }),
+        take(1),
+        tap(places => {
+          place.id = generatedId;
+          this._places.next(places.concat(place));
+        })
+      );
+  }
+
+  updatePlace(placeModel: any, id: string) {
+    let updatedPlaces: Place[];
+    return this.places.pipe(
+      take(1),
+      switchMap(places => {
+        if (!places || places.length <= 0) {
+          return this.getAllPlaces();
+        } else {
+          return of(places);
+        }
+      }),
+      switchMap(places => {
+        updatedPlaces = [...places];
+        const index = updatedPlaces.findIndex(pl => pl.id === id);
+        const placeToChange = updatedPlaces[index];
+        placeToChange.title = placeModel.title;
+        placeToChange.description = placeModel.description;
+        return this.http.put(
+          `https://ionic-angular-first-app.firebaseio.com/offerd-places/${id}.json`,
+          placeToChange
+        );
+      }),
+      tap(() => {
+        this._places.next(updatedPlaces);
+      })
+    );
   }
 }

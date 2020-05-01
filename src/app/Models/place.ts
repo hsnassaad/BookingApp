@@ -4,4 +4,7 @@ export interface Place {
   description: string;
   imageUrl: string;
   price: number;
+  availableFrom: Date;
+  availableTo: Date;
+  userId: string;
 }
